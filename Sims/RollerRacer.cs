@@ -21,6 +21,8 @@ public class RollerRacer : Simulator
     double kDDelta;  // derivative gain for steer filter
     double deltaDes; // desired steer angle
 
+    LinAlgEq sys;
+
     public RollerRacer() : base(11)
     {
         SetInertia(25.0 /*mass*/, 0.3 /*radius of gyration*/);
@@ -43,6 +45,8 @@ public class RollerRacer : Simulator
         x[10] = 0.0;  // deltaDot, steer rate
 
         SetRHSFunc(RHSFuncRRacer);
+
+        sys = new LinAlgEq(5);
     }
 
     private void RHSFuncRRacer(double[] xx, double t, double[] ff)
@@ -62,6 +66,27 @@ public class RollerRacer : Simulator
         double sinPsiPlusDelta = Math.Sin(psi + delta);
 
         // #### You will do some hefty calculations here
+        double deltaDDot = -kDDelta*deltaDot -kPDelta*(delta - deltaDes);
+
+        // equation (1) from notes
+        sys.A[0][0] = m;
+        sys.A[0][1] = sys.A[0][2] = 0.0;
+        sys.A[0][3] = -sinPsi;
+        sys.A[0][4] = -sinPsiPlusDelta;
+        sys.b[0] = 0.0;
+
+        // equation (2) from notes
+        sys.A[1][0] = sys.A[1][2] = 0.0;
+        sys.A[1][1] = m;
+        sys.A[1][3] = -cosPsi;
+        sys.A[1][4] = -cosPsiPlusDelta;
+        sys.b[1] = 0.0;
+
+        // equation (3) from notes
+        sys.A[2][0] = sys.A[2][1] = 0.0;
+        sys.A[2][2] = Ig;
+        sys.A[2][3] = -b;
+        sys.A[2][4] = 0.0; //#########################
 
         // #### Right sides are zero for now. You will fix
         ff[0] = 0.0;
@@ -74,7 +99,7 @@ public class RollerRacer : Simulator
         ff[7] = 0.0;
         ff[8] = 0.0;
         ff[9] = deltaDot;
-        ff[10] = -kDDelta*deltaDot -kPDelta*(delta - deltaDes);
+        ff[10] = deltaDDot;
     }
 
     //------------------------------------------------------------------------
