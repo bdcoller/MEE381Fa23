@@ -57,7 +57,7 @@ public class RollerRacer : Simulator
     {
         // give names to some state variable so code is easier to read & write
         double xDot = xx[1];
-        double yDot = xx[3];
+        double zDot = xx[3];
         double psi  = xx[4];
         double psiDot = xx[5];
         double delta = xx[9];
