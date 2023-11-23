@@ -100,7 +100,9 @@ public class RollerRacer : Simulator
         sys.A[3][1] = cosPsi;
         sys.A[3][2] = b;
         sys.A[3][3] = sys.A[3][4] = 0.0;
-        sys.b[3] = -xDot*psiDot*cosPsi;   //###############################
+        sys.b[3] = -xDot*psiDot*cosPsi + zDot*psiDot*sinPsi;
+
+        // equation (10) from notes
 
         // #### Right sides are zero for now. You will fix
         ff[0] = 0.0;
