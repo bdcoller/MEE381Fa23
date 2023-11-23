@@ -3,7 +3,7 @@
 //       Equations of motion are derived in class notes.
 //============================================================================
 using System;
-using System.Security.AccessControl;
+using Godot;
 
 public class RollerRacer : Simulator
 {
@@ -103,14 +103,23 @@ public class RollerRacer : Simulator
         sys.b[3] = -xDot*psiDot*cosPsi + zDot*psiDot*sinPsi;
 
         // equation (10) from notes
+        double dum = psiDot + deltaDot;
+        sys.A[4][0] = sinPsiPlusDelta;
+        sys.A[4][1] = cosPsiPlusDelta;
+        sys.A[4][2] = d-h*sinDelta;
+        sys.A[4][3] = sys.A[4][4] = 0.0;
+        sys.b[4] = -d*deltaDDot - xDot*dum*cosPsiPlusDelta +
+            zDot*dum*sinPsiPlusDelta + h*psiDot*deltaDot*cosDelta;
 
-        // #### Right sides are zero for now. You will fix
-        ff[0] = 0.0;
-        ff[1] = 0.0;
-        ff[2] = 0.0;
-        ff[3] = 0.0;
-        ff[4] = 0.0;
-        ff[5] = 0.0;
+        sys.SolveGauss();
+        GD.Print(sys.sol[1]);
+
+        ff[0] = xDot;
+        ff[1] = sys.sol[0];
+        ff[2] = zDot;
+        ff[3] = sys.sol[1];
+        ff[4] = psiDot;
+        ff[5] = sys.sol[2];
         ff[6] = 0.0;
         ff[7] = 0.0;
         ff[8] = 0.0;
