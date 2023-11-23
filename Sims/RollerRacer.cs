@@ -3,6 +3,7 @@
 //       Equations of motion are derived in class notes.
 //============================================================================
 using System;
+using System.Security.AccessControl;
 
 public class RollerRacer : Simulator
 {
@@ -91,7 +92,15 @@ public class RollerRacer : Simulator
         sys.A[2][0] = sys.A[2][1] = 0.0;
         sys.A[2][2] = Ig;
         sys.A[2][3] = -b;
-        sys.A[2][4] = 0.0; //#########################
+        sys.A[2][4] = h*cosDelta - d;
+        sys.b[2] = 0.0;
+
+        // equation (7) from notes
+        sys.A[3][0] = sinPsi;
+        sys.A[3][1] = cosPsi;
+        sys.A[3][2] = b;
+        sys.A[3][3] = sys.A[3][4] = 0.0;
+        sys.b[3] = -xDot*psiDot*cosPsi;   //###############################
 
         // #### Right sides are zero for now. You will fix
         ff[0] = 0.0;
