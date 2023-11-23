@@ -100,17 +100,16 @@ public class LinAlgEq
                 maxElem = Math.Abs(M[i][j]);
                 rowIdx = i;
             }
-
-            // swap rows
-            if(rowIdx != j)
-            {
-                holder = M[j];
-                M[j] = M[rowIdx];
-                M[rowIdx] = holder;
-                //Console.WriteLine("Swap " + j.ToString());
-            }
         }
 
+        // swap rows
+        if(rowIdx != j)
+        {
+            holder = M[j];
+            M[j] = M[rowIdx];
+            M[rowIdx] = holder;
+            //Console.WriteLine("Swap " + j.ToString());
+        }
     }
 
     //--------------------------------------------------------------------

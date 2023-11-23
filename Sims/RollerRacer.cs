@@ -22,6 +22,7 @@ public class RollerRacer : Simulator
     double deltaDes; // desired steer angle
 
     LinAlgEq sys;
+    bool simBegun;   // indicates whether simulation has begun
 
     public RollerRacer() : base(11)
     {
@@ -47,6 +48,8 @@ public class RollerRacer : Simulator
         SetRHSFunc(RHSFuncRRacer);
 
         sys = new LinAlgEq(5);
+
+        simBegun = false;
     }
 
     private void RHSFuncRRacer(double[] xx, double t, double[] ff)
@@ -62,6 +65,8 @@ public class RollerRacer : Simulator
         // calculate some trig functions here, so you only have to do it once
         double cosPsi = Math.Cos(psi);
         double sinPsi = Math.Sin(psi);
+        double cosDelta = Math.Cos(delta);
+        double sinDelta = Math.Sin(delta);
         double cosPsiPlusDelta = Math.Cos(psi + delta);
         double sinPsiPlusDelta = Math.Sin(psi + delta);
 
@@ -100,6 +105,20 @@ public class RollerRacer : Simulator
         ff[8] = 0.0;
         ff[9] = deltaDot;
         ff[10] = deltaDDot;
+
+        simBegun = true;
+    }
+
+    //------------------------------------------------------------------------
+    // SetInitialSpeed: Sets the initial speed of the vehicle. Must be set
+    //          before simulation has begun.
+    //------------------------------------------------------------------------
+    public void SetInitalSpeed(double val)
+    {
+        if(simBegun) return;
+
+        x[1] = val;
+
     }
 
     //------------------------------------------------------------------------
@@ -207,6 +226,33 @@ public class RollerRacer : Simulator
     {
         get{
             return x[8];
+        }
+    }
+
+    public double Speed
+    {
+        get{
+            // ######## You have to write this part ################
+
+            return(-1.21212121);
+        }
+    }
+
+    public double SlipRateFront
+    {
+        get{
+            // ######## You have to write this part ################
+
+            return(-1.21212121);
+        }
+    }
+
+    public double SlipRateRear
+    {
+        get{
+            // ######## You have to write this part ################
+
+            return(-1.21212121);
         }
     }
 }
