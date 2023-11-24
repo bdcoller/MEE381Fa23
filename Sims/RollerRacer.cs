@@ -3,7 +3,6 @@
 //       Equations of motion are derived in class notes.
 //============================================================================
 using System;
-using Godot;
 
 public class RollerRacer : Simulator
 {
@@ -76,20 +75,23 @@ public class RollerRacer : Simulator
 
         // equation (1) from notes
         sys.A[0][0] = m;
-        sys.A[0][1] = sys.A[0][2] = 0.0;
+        sys.A[0][1] = 0.0;
+        sys.A[0][2] = 0.0;
         sys.A[0][3] = -sinPsi;
         sys.A[0][4] = -sinPsiPlusDelta;
         sys.b[0] = 0.0;
 
         // equation (2) from notes
-        sys.A[1][0] = sys.A[1][2] = 0.0;
+        sys.A[1][0] = 0.0;
         sys.A[1][1] = m;
+        sys.A[1][2] = 0.0;
         sys.A[1][3] = -cosPsi;
         sys.A[1][4] = -cosPsiPlusDelta;
         sys.b[1] = 0.0;
 
         // equation (3) from notes
-        sys.A[2][0] = sys.A[2][1] = 0.0;
+        sys.A[2][0] = 0.0;
+        sys.A[2][1] = 0.0;
         sys.A[2][2] = Ig;
         sys.A[2][3] = -b;
         sys.A[2][4] = h*cosDelta - d;
@@ -99,20 +101,21 @@ public class RollerRacer : Simulator
         sys.A[3][0] = sinPsi;
         sys.A[3][1] = cosPsi;
         sys.A[3][2] = b;
-        sys.A[3][3] = sys.A[3][4] = 0.0;
+        sys.A[3][3] = 0.0;
+        sys.A[3][4] = 0.0;
         sys.b[3] = -xDot*psiDot*cosPsi + zDot*psiDot*sinPsi;
 
         // equation (10) from notes
         double dum = psiDot + deltaDot;
         sys.A[4][0] = sinPsiPlusDelta;
         sys.A[4][1] = cosPsiPlusDelta;
-        sys.A[4][2] = d-h*sinDelta;
-        sys.A[4][3] = sys.A[4][4] = 0.0;
+        sys.A[4][2] = d-h*cosDelta;
+        sys.A[4][3] = 0.0;
+        sys.A[4][4] = 0.0;
         sys.b[4] = -d*deltaDDot - xDot*dum*cosPsiPlusDelta +
-            zDot*dum*sinPsiPlusDelta + h*psiDot*deltaDot*cosDelta;
+            zDot*dum*sinPsiPlusDelta - h*psiDot*deltaDot*sinDelta;
 
         sys.SolveGauss();
-        GD.Print(sys.sol[1]);
 
         ff[0] = xDot;
         ff[1] = sys.sol[0];
@@ -120,9 +123,10 @@ public class RollerRacer : Simulator
         ff[3] = sys.sol[1];
         ff[4] = psiDot;
         ff[5] = sys.sol[2];
-        ff[6] = 0.0;
-        ff[7] = 0.0;
-        ff[8] = 0.0;
+        ff[6] = -(xDot*cosPsi - zDot*sinPsi - c*psiDot)/rW;
+        ff[7] = -(xDot*cosPsi - zDot*sinPsi + c*psiDot)/rW;;
+        ff[8] = -(xDot*cosPsiPlusDelta - zDot*sinPsiPlusDelta + 
+            h*psiDot*sinDelta)/rWs;
         ff[9] = deltaDot;
         ff[10] = deltaDDot;
 
