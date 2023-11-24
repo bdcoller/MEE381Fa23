@@ -3,9 +3,6 @@ using System;
 
 public partial class Cart : Node3D
 {
-	//Node3D cartFrame;
-	// MeshInstance3D axleBar;
-	// BoxMesh axleBarMesh;
 	Node3D wheelFrameL;
 	Node3D wheelFrameR;
 	Node3D steerFrame;
@@ -21,9 +18,15 @@ public partial class Cart : Node3D
 	float tireWdS;        // steered tire width
 	float wheelWdS;       // steered wheel width
 	float barWidth;        // width of bar
-	// float axleBarLen;      // length of the axle bar
-	// float longBarLen;      // length of the longitudinal bar.
+	
 	float cgDist;          // dist of cg ahead of wheel axle
+
+	Vector3 cgLoc;         // location of cg pojected on y=0 plane
+	Vector3 rotVec;        // rotation about vertical axis
+	Vector3 rotWhL;        // rotation vector for left wheel
+	Vector3 rotWhR;        //                     right wheel
+	Vector3 rotWhF;        //                     front wheel
+	Vector3 rotSteer;      // rotation vector for steer axis
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -42,18 +45,18 @@ public partial class Cart : Node3D
 		barWidth = 0.08f;
 		cgDist = 0.6f;
 
-		// axleBarLen = 1.0f;
-		// longBarLen = 1.3f;
-
-		//axleBar = GetNode<MeshInstance3D>("CartFrame/AxleBar");
-		//cartFrame = GetNode<Node3D>("CartFrame");
 		wheelFrameL = GetNode<Node3D>("CartFrame/WheelFrameL");
 		wheelFrameR = GetNode<Node3D>("CartFrame/WheelFrameR");
 		steerFrame = GetNode<Node3D>("CartFrame/SteerFrame");
 		wheelFrameF = GetNode<Node3D>("CartFrame/SteerFrame/WheelFrameF");
 		BuildModel();
-		// axleBarMesh = (BoxMesh)axleBar.Mesh;
-		// axleBarMesh.Size = new Vector3(barWidth, barWidth, axleBarLen);
+		
+		cgLoc  = new Vector3();
+		rotVec = new Vector3();
+		rotWhL = new Vector3();
+		rotWhR = new Vector3();
+		rotWhF = new Vector3();
+		rotSteer = new Vector3();
 	}
 
 	
@@ -153,7 +156,30 @@ public partial class Cart : Node3D
 	}
 
 	//------------------------------------------------------------------------
-	// SetSteerAngle
+	// SetLoc: Sets (xG,zG) center of mass coordinates, heading angle (rad),
+	//         wheel angles (rad), and steer angle
+	//------------------------------------------------------------------------
+	public void SetLoc(float xG, float zG, float hdg, float thL, float thR,
+		float thF, float stAngle)
+	{
+		cgLoc.X = xG;
+		cgLoc.Z = zG;
+		rotVec.Y = hdg;
+		rotWhL.Z = thL;
+		rotWhR.Z = thR;
+		rotWhF.Z = thF;
+		rotSteer.Y = stAngle;
+
+		Position = cgLoc;
+		Rotation = rotVec;
+		wheelFrameL.Rotation = rotWhL;
+		wheelFrameR.Rotation = rotWhR;
+		wheelFrameF.Rotation = rotWhF;
+		steerFrame.Rotation = rotSteer;
+	}
+
+	//------------------------------------------------------------------------
+	// SetSteerAngle: Sets steering angle (radians)
 	//------------------------------------------------------------------------
 	public void SetSteerAngle(float stAngle)
 	{
