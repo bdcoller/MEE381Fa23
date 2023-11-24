@@ -57,15 +57,17 @@ public partial class RacerScene : Node3D
 
 		// set up the data display
 		dataDisplay = GetNode<UIPanelDisplay>("Control/MarginContainer/DataDisplay");
-		dataDisplay.SetNDisplay(4);
+		dataDisplay.SetNDisplay(5);
 		dataDisplay.SetLabel(0,"Roller Racer");
 		dataDisplay.SetValue(0,"");
 		dataDisplay.SetLabel(1,"Speed");
 		dataDisplay.SetValue(1,"---");
-		dataDisplay.SetLabel(2,"Slip Rate F");
+		dataDisplay.SetLabel(2,"Kin. Energy");
 		dataDisplay.SetValue(2,"---");
-		dataDisplay.SetLabel(3,"Slip Rate R");
+		dataDisplay.SetLabel(3,"Slip Rate F");
 		dataDisplay.SetValue(3,"---");
+		dataDisplay.SetLabel(4,"Slip Rate R");
+		dataDisplay.SetValue(4,"---");
 
 		// set up the cart model
 		cart = GetNode<Cart>("Cart");
@@ -96,7 +98,9 @@ public partial class RacerScene : Node3D
 	public override void _Process(double delta)
 	{
 		
-		cart.SteerAngle = (float)racer.SteerAngle;
+		cart.SetLoc(0.0f, 0.0f, 0.0f, // need to update this with other states
+			0.0f, 0.0f, 0.0f, 
+			(float)racer.SteerAngle);
 	}
 
     //------------------------------------------------------------------------
