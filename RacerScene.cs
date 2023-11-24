@@ -98,7 +98,7 @@ public partial class RacerScene : Node3D
 	public override void _Process(double delta)
 	{
 		
-		cart.SetLoc(0.0f, 0.0f, 0.0f, // need to update this with other states
+		cart.SetLoc((float)racer.xG, (float)racer.zG, (float)racer.Heading,
 			0.0f, 0.0f, 0.0f, 
 			(float)racer.SteerAngle);
 	}
