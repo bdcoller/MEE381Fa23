@@ -20,12 +20,15 @@ public class RollerRacer : Simulator
     double kPDelta;  // proportional gain for steer filter
     double kDDelta;  // derivative gain for steer filter
     double deltaDes; // desired steer angle
+    LinAlgEq sys;    // system of linear algebraic equations
+    double muS;      // static frict coeff, lower bound
 
-    LinAlgEq sys;
     bool simBegun;   // indicates whether simulation has begun
 
     public RollerRacer() : base(11)
     {
+        g = 9.81;
+        muS = 0.9;
         SetInertia(25.0 /*mass*/, 0.3 /*radius of gyration*/);
         SetGeometry(1.3 /*wheel base*/, 0.6 /* cg dist from axle*/,
             0.3 /*caster dist*/, 1.0 /*wheel sep*/, 0.5*0.75 /*Rwheel radius*/,
@@ -287,6 +290,15 @@ public class RollerRacer : Simulator
             double slip = x[1]*Math.Sin(x[4]) + x[3]*Math.Cos(x[4]) +
                 b*x[5];
             return(slip);
+        }
+    }
+
+    public double FontFrictionFactor
+    {
+        get{
+            // ######## You have to write this part ################
+
+            return(-1.21212121);
         }
     }
 }

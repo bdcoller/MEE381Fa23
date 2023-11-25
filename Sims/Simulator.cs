@@ -11,6 +11,7 @@ public class Simulator
     protected double[][] f;    // 2d array that holds values of rhs
 
     protected double g;                  // gravitational field strength
+    protected int subStep;     // which substep of integrator current
 
     private Action<double[], double, double[]> rhsFunc;
 
@@ -20,6 +21,7 @@ public class Simulator
     public Simulator(int nn)
     {
         g = 9.81; 
+        subStep = 0;
 
         n = nn;
         x = new double[n];
@@ -41,6 +43,7 @@ public class Simulator
     {
         int i;
 
+        subStep = 0;
         rhsFunc(x,time,f[0]);
         for(i=0;i<n;++i)
         {
@@ -56,12 +59,14 @@ public class Simulator
     {
         int i;
 
+        subStep = 0;
         rhsFunc(x,time,f[0]);
         for(i=0;i<n;++i)
         {
             xi[i] = x[i] + f[0][i] * dTime;
         }
 
+        subStep = 1;
         rhsFunc(xi,time+dTime,f[1]);
         for(i=0;i<n;++i)
         {
