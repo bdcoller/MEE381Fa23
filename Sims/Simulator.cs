@@ -75,9 +75,34 @@ public class Simulator
     //--------------------------------------------------------------------
     public void Step(double time, double dTime)
     {
-        //int i;
+        int i;
 
-        // It's your job to write the rest of this.
+        double dtByTwo = 0.5*dTime;
+
+        rhsFunc(x,time,f[0]);
+        for(i=0;i<n;++i)
+        {
+            xi[i] = x[i] + f[0][i] * dtByTwo;
+        }
+
+        rhsFunc(xi,time+dtByTwo,f[1]);
+        for(i=0;i<n;++i)
+        {
+            xi[i] = x[i] + f[1][i] * dtByTwo;
+        }
+
+        rhsFunc(xi,time+dtByTwo,f[2]);
+        for(i=0;i<n;++i)
+        {
+            xi[i] = x[i] + f[2][i] * dTime;
+        }
+
+        rhsFunc(xi,time+dTime,f[3]);
+        for(i=0;i<n;++i)
+        {
+            x[i] += (f[0][i] + 2.0*f[1][i] + 2.0*f[2][i] + f[3][i]) * 
+                dTime/6.0;
+        }
     }
 
     //--------------------------------------------------------------------
