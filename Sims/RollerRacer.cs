@@ -30,8 +30,8 @@ public class RollerRacer : Simulator
         SetGeometry(1.3 /*wheel base*/, 0.6 /* cg dist from axle*/,
             0.3 /*caster dist*/, 1.0 /*wheel sep*/, 0.5*0.75 /*Rwheel radius*/,
             0.15 /*steered wheel radius*/);
-        kPDelta = 10.0;
-        kDDelta = 4.0;
+        kPDelta = 100.0;
+        kDDelta = 10.0;
 
         x[0] = 0.0;   // x coordinate of center of mass
         x[1] = 0.0;   // xDot, time derivative of x
