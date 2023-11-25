@@ -20,8 +20,11 @@ public class RollerRacer : Simulator
     double kPDelta;  // proportional gain for steer filter
     double kDDelta;  // derivative gain for steer filter
     double deltaDes; // desired steer angle
-    LinAlgEq sys;    // system of linear algebraic equations
+    
+    double kPSlip;   // proportional gain for slip error control
     double muS;      // static frict coeff, lower bound
+
+    LinAlgEq sys;    // system of linear algebraic equations
 
     bool simBegun;   // indicates whether simulation has begun
 
@@ -35,6 +38,7 @@ public class RollerRacer : Simulator
             0.15 /*steered wheel radius*/);
         kPDelta = 10.0;
         kDDelta = 4.0;
+        kPSlip = 2.0;
 
         x[0] = 0.0;   // x coordinate of center of mass
         x[1] = 0.0;   // xDot, time derivative of x
@@ -75,6 +79,9 @@ public class RollerRacer : Simulator
 
         // #### You will do some hefty calculations here
         double deltaDDot = -kDDelta*deltaDot -kPDelta*(delta - deltaDes);
+        double slipRateRear = xDot*sinPsi + zDot*cosPsi + b*psiDot;
+        double slipRateFront = xDot*sinPsiPlusDelta + zDot*cosPsiPlusDelta -
+            h*psiDot*cosDelta + (psiDot + deltaDot)*d;
 
         // equation (1) from notes
         sys.A[0][0] = m;
@@ -106,7 +113,8 @@ public class RollerRacer : Simulator
         sys.A[3][2] = b;
         sys.A[3][3] = 0.0;
         sys.A[3][4] = 0.0;
-        sys.b[3] = -xDot*psiDot*cosPsi + zDot*psiDot*sinPsi;
+        sys.b[3] = -xDot*psiDot*cosPsi + zDot*psiDot*sinPsi - 
+            kPSlip*slipRateRear;
 
         // equation (10) from notes
         double dum = psiDot + deltaDot;
@@ -116,7 +124,8 @@ public class RollerRacer : Simulator
         sys.A[4][3] = 0.0;
         sys.A[4][4] = 0.0;
         sys.b[4] = -d*deltaDDot - xDot*dum*cosPsiPlusDelta +
-            zDot*dum*sinPsiPlusDelta - h*psiDot*deltaDot*sinDelta;
+            zDot*dum*sinPsiPlusDelta - h*psiDot*deltaDot*sinDelta -
+            kPSlip*slipRateFront;
 
         sys.SolveGauss();
 
