@@ -24,6 +24,10 @@ public class RollerRacer : Simulator
     double kPSlip;   // proportional gain for slip error control
     double muS;      // static frict coeff, lower bound
 
+    double FbrakeMax; // maximum braking force
+    double brakeVelTH; // velocity threshold for braking
+    double brakeSignal;// brakeSignal
+
     LinAlgEq sys;    // system of linear algebraic equations
 
     bool simBegun;   // indicates whether simulation has begun
@@ -82,6 +86,17 @@ public class RollerRacer : Simulator
         double slipRateRear = xDot*sinPsi + zDot*cosPsi + b*psiDot;
         double slipRateFront = xDot*sinPsiPlusDelta + zDot*cosPsiPlusDelta -
             h*psiDot*cosDelta + (psiDot + deltaDot)*d;
+        
+        // braking
+        double axlVel = xDot*cosPsi - zDot*sinPsi;
+        double brakeForce = 0.0;
+        if(Math.Abs(axlVel) > brakeVelTH){  // coulomb braking
+            brakeForce = -Math.Sign(axlVel)*FbrakeMax;
+        }
+        else{   // viscous braking
+            brakeForce = -FbrakeMax*axlVel/brakeVelTH;
+        }
+        brakeForce *= brakeSignal;
 
         // equation (1) from notes
         sys.A[0][0] = m;
@@ -89,7 +104,7 @@ public class RollerRacer : Simulator
         sys.A[0][2] = 0.0;
         sys.A[0][3] = -sinPsi;
         sys.A[0][4] = -sinPsiPlusDelta;
-        sys.b[0] = 0.0;
+        sys.b[0] = brakeForce*cosPsi;
 
         // equation (2) from notes
         sys.A[1][0] = 0.0;
@@ -97,7 +112,7 @@ public class RollerRacer : Simulator
         sys.A[1][2] = 0.0;
         sys.A[1][3] = -cosPsi;
         sys.A[1][4] = -cosPsiPlusDelta;
-        sys.b[1] = 0.0;
+        sys.b[1] = -brakeForce*sinPsi;
 
         // equation (3) from notes
         sys.A[2][0] = 0.0;
@@ -172,6 +187,10 @@ public class RollerRacer : Simulator
 
         m = mm;
         Ig = m*rgyr*rgyr;
+
+        FbrakeMax = 0.3*m*g;
+        brakeVelTH = 0.1;
+        brakeSignal = 0.0;
     }
 
     //------------------------------------------------------------------------
@@ -208,6 +227,16 @@ public class RollerRacer : Simulator
     //------------------------------------------------------------------------
     // Getters/Setters
     //------------------------------------------------------------------------
+
+    public double BrakeSignal
+    {
+        set{
+            double bSig = value;
+            if(bSig < 0.0) bSig = 0.0;
+            if(bSig > 1.0) bSig = 1.0;
+            brakeSignal = bSig;
+        }
+    }
 
     public double SteerAngleSignal
     {

@@ -29,6 +29,7 @@ public partial class RacerScene : Node3D
 	double rGyr;         // radius of gyration
 
 	double steerSig;     // steer signal from pilot
+	double brakeSig;     // brake signal from pilot
 
 	RollerRacer racer;   // simulation of the Roller Racer
 	double time;         // elapsed time
@@ -91,6 +92,8 @@ public partial class RacerScene : Node3D
 		rGyr = 0.3;
 		racer = new RollerRacer();    // simulation
 		time = 0.0;
+
+		brakeSig = 0.0;
 	}
 
 	//------------------------------------------------------------------------
@@ -119,6 +122,7 @@ public partial class RacerScene : Node3D
 
 		ProcessPilotInput();
 		racer.SteerAngleSignal = (-50.0 * steerSig)*Math.PI/180.0;
+		racer.BrakeSignal = brakeSig;
 
 		racer.Step(time,delta);
 		time += delta;
@@ -141,6 +145,13 @@ public partial class RacerScene : Node3D
 			steerSig = 1.0;
 		}
 
+
+		brakeSig = (double)Input.GetJoyAxis(0, JoyAxis.RightY);
+		if(brakeSig < 0.01)
+			brakeSig = 0.0;
+
+		if(Input.IsActionPressed("ui_accept"))
+			brakeSig = 1.0;
 	}
 
 }
