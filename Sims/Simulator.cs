@@ -84,24 +84,28 @@ public class Simulator
 
         double dtByTwo = 0.5*dTime;
 
+        subStep = 0;
         rhsFunc(x,time,f[0]);
         for(i=0;i<n;++i)
         {
             xi[i] = x[i] + f[0][i] * dtByTwo;
         }
 
+        subStep = 1;
         rhsFunc(xi,time+dtByTwo,f[1]);
         for(i=0;i<n;++i)
         {
             xi[i] = x[i] + f[1][i] * dtByTwo;
         }
 
+        subStep = 2;
         rhsFunc(xi,time+dtByTwo,f[2]);
         for(i=0;i<n;++i)
         {
             xi[i] = x[i] + f[2][i] * dTime;
         }
 
+        subStep = 3;
         rhsFunc(xi,time+dTime,f[3]);
         for(i=0;i<n;++i)
         {
