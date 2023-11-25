@@ -3,7 +3,6 @@
 //============================================================================
 using Godot;
 using System;
-using System.Linq.Expressions;
 
 public partial class RacerScene : Node3D
 {
@@ -69,6 +68,9 @@ public partial class RacerScene : Node3D
 		dataDisplay.SetLabel(4,"Slip Rate R");
 		dataDisplay.SetValue(4,"---");
 
+		dataDisplay.SetDigitsAfterDecimal(3,6);
+		dataDisplay.SetDigitsAfterDecimal(4,6);
+
 		// set up the cart model
 		cart = GetNode<Cart>("Cart");
 		wheelRad = 0.5 * 0.75;  cart.WheelRadius = (float)wheelRad;
@@ -97,9 +99,14 @@ public partial class RacerScene : Node3D
 	//------------------------------------------------------------------------
 	public override void _Process(double delta)
 	{
-		
+		dataDisplay.SetValue(1,(float)racer.Speed);
+		dataDisplay.SetValue(2,(float)racer.KineticEnergy);
+		dataDisplay.SetValue(3,(float)racer.SlipRateFront);
+		dataDisplay.SetValue(4,(float)racer.SlipRateRear);
+
 		cart.SetLoc((float)racer.xG, (float)racer.zG, (float)racer.Heading,
-			0.0f, 0.0f, 0.0f, 
+			(float)racer.WheelAngleL, (float)racer.WheelAngleR, 
+			(float)racer.WheelAngleF, 
 			(float)racer.SteerAngle);
 	}
 
@@ -113,7 +120,7 @@ public partial class RacerScene : Node3D
 		ProcessPilotInput();
 		racer.SteerAngleSignal = (-50.0 * steerSig)*Math.PI/180.0;
 
-		racer.StepRK2(time,delta);  // You are going to use the RK4 integrator
+		racer.Step(time,delta);
 		time += delta;
     }
 

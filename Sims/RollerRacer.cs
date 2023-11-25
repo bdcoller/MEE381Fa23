@@ -30,8 +30,8 @@ public class RollerRacer : Simulator
         SetGeometry(1.3 /*wheel base*/, 0.6 /* cg dist from axle*/,
             0.3 /*caster dist*/, 1.0 /*wheel sep*/, 0.5*0.75 /*Rwheel radius*/,
             0.15 /*steered wheel radius*/);
-        kPDelta = 100.0;
-        kDDelta = 10.0;
+        kPDelta = 10.0;
+        kDDelta = 4.0;
 
         x[0] = 0.0;   // x coordinate of center of mass
         x[1] = 0.0;   // xDot, time derivative of x
@@ -256,36 +256,37 @@ public class RollerRacer : Simulator
     public double Speed
     {
         get{
-            // ######## You have to write this part ################
 
-            return(-1.21212121);
+            return(Math.Sqrt(x[1]*x[1] + x[3]*x[3]));
         }
     }
 
     public double KineticEnergy
     {
         get{
-            // ######## You have to write this part ################
-
-            return(-1.21212121);
+            double ke1 = 0.5*m*(x[1]*x[1] + x[3]*x[3]);
+            double ke2 = 0.5*Ig*x[5]*x[5];
+            return(ke1+ke2);
         }
     }
 
     public double SlipRateFront
     {
         get{
-            // ######## You have to write this part ################
+            double slip = x[1]*Math.Sin(x[4]+x[9]) +
+                x[3]*Math.Cos(x[4]+x[9]) - h*x[5]*Math.Cos(x[9]) +
+                (x[5] + x[10])*d;
 
-            return(-1.21212121);
+            return(slip);
         }
     }
 
     public double SlipRateRear
     {
         get{
-            // ######## You have to write this part ################
-
-            return(-1.21212121);
+            double slip = x[1]*Math.Sin(x[4]) + x[3]*Math.Cos(x[4]) +
+                b*x[5];
+            return(slip);
         }
     }
 }
