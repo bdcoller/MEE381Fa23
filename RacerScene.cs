@@ -127,8 +127,10 @@ public partial class RacerScene : Node3D
 		racer.Step(time,delta);
 		time += delta;
 
-		lerpSpeed = 3.0f;
-		camSubject = new Vector3(0.0f, 1.0f, 0.0f);
+		camSubject.X = (float)racer.xG;
+		camSubject.Z = (float)racer.zG;
+		camTg = camTg.Lerp(camSubject, lerpSpeed*(float)delta);
+		cam.Target = camTg;
     }
 
     //------------------------------------------------------------------------
