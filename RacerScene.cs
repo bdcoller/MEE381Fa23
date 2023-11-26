@@ -12,6 +12,8 @@ public partial class RacerScene : Node3D
 	float camDist;
 	float camFOV;
 	Vector3 camTg;       // coords of camera target
+	Vector3 camSubject;  // coords that cam is lerping toward
+	float lerpSpeed;     // factor for lerping the camera
 
 	Cart cart;           // model of the cart
 	double wheelRad;     // wheel radius
@@ -46,6 +48,8 @@ public partial class RacerScene : Node3D
 		camDist = 4.0f;
 		camFOV = 55.0f;
 
+		lerpSpeed = 3.0f;
+		camSubject = new Vector3(0.0f, 1.0f, 0.0f);
 		camTg = new Vector3(0.0f, 1.0f, 0.0f);
 		cam = GetNode<CamRig>("CamRig");
 		cam.LongitudeDeg = longitudeDeg;
@@ -122,6 +126,9 @@ public partial class RacerScene : Node3D
 
 		racer.Step(time,delta);
 		time += delta;
+
+		lerpSpeed = 3.0f;
+		camSubject = new Vector3(0.0f, 1.0f, 0.0f);
     }
 
     //------------------------------------------------------------------------

@@ -25,7 +25,7 @@ uv1_triplanar = true
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_4c2am"]
 material = SubResource("StandardMaterial3D_hn27t")
-size = Vector2(10, 10)
+size = Vector2(30, 30)
 
 [node name="RacerScene" type="Node3D"]
 script = ExtResource("1_hwg7e")
